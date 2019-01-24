@@ -1,0 +1,2 @@
+export const TOGGLE_NUMBERS = "TOGGLE_NUMBERS";
+export const CHANGE_LEVEL = "CHANGE_LEVEL";
