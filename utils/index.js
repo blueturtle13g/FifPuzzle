@@ -1,7 +1,21 @@
 import React from 'react';
-import {Text, View, StyleSheet} from "react-native";
+import {Text, View, StyleSheet, AsyncStorage} from "react-native";
 
-const shuffle = array =>{
+export const msToTime = s=> {
+    // Pad to 2 or 3 digits, default is 2
+    let pad = (n, z = 2) => ('00' + n).slice(-z);
+    return pad(s/3.6e6|0) + ':' + pad((s%3.6e6)/6e4 | 0) + ':' + pad((s%6e4)/1000|0);
+};
+
+export const retrieveRecords = async ()=>{
+    try {
+        const retrievedItem =  await AsyncStorage.getItem('records');
+        return JSON.parse(retrievedItem);
+    } catch (error) {
+    }
+};
+
+export const shuffle = array =>{
     let currentIndex = array.length, temporaryValue, randomIndex;
     while (0 !== currentIndex) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -13,7 +27,7 @@ const shuffle = array =>{
     return array;
 };
 
-export const genNumbers = (level)=>{
+export const genNumbers = level=>{
     let numbers = [];
     for(let i = 1; i < level; i++){
         numbers.push(
@@ -21,13 +35,11 @@ export const genNumbers = (level)=>{
                 key={i}
                 style={styles.noCon}
             >
-                <Text style={styles.text}>
-                    {i}
-                </Text>
+                <Text style={styles.text}>{i}</Text>
             </View>
         );
     }
-    numbers.push(<View style={styles.absentCon} key={0}/>);
+    numbers.push(<View style ={styles.absentCon} key={0}/>);
     numbers = shuffle(numbers);
     return numbers;
 };
@@ -40,6 +52,8 @@ const styles = StyleSheet.create({
     },
     absentCon:{
         flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: "#6faaa3"
     },
     text:{
